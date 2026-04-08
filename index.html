@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wedding Fitness Plan</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Georgia', serif; background: #faf9f7; color: #2c2c2c; line-height: 1.6; }
+
+  /* Header */
+  header { background: linear-gradient(135deg, #1a3a2a 0%, #2d6a4f 100%); color: white; padding: 24px 16px 20px; }
+  header h1 { font-size: 1.4rem; font-weight: normal; letter-spacing: 0.5px; }
+  header p { margin-top: 6px; color: #a8d5b5; font-size: 0.85rem; }
+  header .badge { display: inline-block; background: rgba(255,255,255,0.15); border-radius: 20px; padding: 4px 12px; font-size: 0.75rem; margin-top: 10px; }
+  @media (min-width: 600px) {
+    header { padding: 36px 32px 28px; }
+    header h1 { font-size: 2rem; }
+    header p { font-size: 0.95rem; }
+  }
+
+  /* Layout */
+  .container { max-width: 900px; margin: 0 auto; padding: 16px 12px; }
+  @media (min-width: 600px) { .container { padding: 28px 20px; } }
+
+  /* Cards */
+  .phase-card { background: white; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); margin-bottom: 20px; overflow: hidden; }
+  .phase-header { padding: 14px 16px; display: flex; align-items: flex-start; gap: 10px; }
+  .phase-header h2 { font-size: 1rem; font-weight: bold; }
+  .phase-header .dates { font-size: 0.78rem; color: #666; margin-left: auto; white-space: nowrap; padding-left: 8px; }
+  .phase-body { padding: 0 14px 18px; }
+  @media (min-width: 600px) {
+    .phase-header { padding: 18px 24px; gap: 14px; }
+    .phase-header h2 { font-size: 1.15rem; }
+    .phase-body { padding: 0 24px 24px; }
+  }
+
+  .phase-1 .phase-header { background: #e8f4ec; border-left: 4px solid #2d6a4f; }
+  .phase-2 .phase-header { background: #e8f0f7; border-left: 4px solid #2b5c8a; }
+  .phase-3 .phase-header { background: #f5ebe0; border-left: 4px solid #c07b3a; }
+
+  /* Week Grid — mobile: single column horizontal cards */
+  .week-grid { display: grid; grid-template-columns: 1fr; gap: 6px; margin-top: 14px; }
+
+  .day-cell {
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    min-height: unset;
+  }
+  .day-label {
+    font-weight: bold;
+    font-size: 0.72rem;
+    color: #555;
+    min-width: 34px;
+    padding-top: 3px;
+    flex-shrink: 0;
+  }
+  .day-tags { display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-start; flex: 1; }
+  .day-note { font-size: 0.65rem; color: #888; margin-top: 2px; width: 100%; line-height: 1.3; }
+  .day-note-green { font-size: 0.65rem; color: #166534; margin-top: 2px; width: 100%; font-weight: bold; }
+
+  /* Desktop: restore 7-column grid */
+  @media (min-width: 620px) {
+    .week-grid { grid-template-columns: repeat(7, 1fr); }
+    .day-cell {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      min-height: 90px;
+      padding: 8px 4px;
+      font-size: 0.72rem;
+      gap: 0;
+    }
+    .day-label { min-width: unset; padding-top: 0; margin-bottom: 4px; }
+    .day-tags { flex-direction: column; align-items: center; gap: 2px; justify-content: flex-start; }
+    .day-note, .day-note-green { text-align: center; margin-top: 4px; }
+  }
+
+  .day-rest { background: #f0f0f0; color: #888; }
+  .day-swim { background: #dbeafe; color: #1e40af; }
+  .day-run { background: #dcfce7; color: #166534; }
+  .day-gym { background: #fef9c3; color: #854d0e; }
+  .day-gym-swim { background: linear-gradient(135deg, #fef9c3 50%, #dbeafe 50%); color: #333; }
+  .day-active { background: #f3e8ff; color: #6b21a8; }
+
+  /* Tags */
+  .tag { display: inline-block; border-radius: 10px; padding: 2px 7px; font-size: 0.68rem; font-weight: bold; white-space: nowrap; }
+  .tag-swim { background: #bfdbfe; color: #1e40af; }
+  .tag-run { background: #bbf7d0; color: #166534; }
+  .tag-weights { background: #fde68a; color: #92400e; }
+  .tag-core { background: #fed7aa; color: #9a3412; }
+  .tag-rest { background: #e5e7eb; color: #6b7280; }
+  .tag-bike { background: #e9d5ff; color: #6b21a8; }
+  .tag-sauna { background: #fce7f3; color: #9d174d; }
+  .tag-stretch { background: #d1fae5; color: #065f46; }
+
+  /* Section title */
+  .section-title { font-size: 0.82rem; font-weight: bold; color: #444; text-transform: uppercase; letter-spacing: 0.5px; margin: 18px 0 10px; border-bottom: 1px solid #eee; padding-bottom: 6px; }
+
+  /* Info grid — mobile: 1 col, desktop: 2 col */
+  .info-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 14px; }
+  @media (min-width: 560px) { .info-grid { grid-template-columns: 1fr 1fr; } }
+
+  .info-box { background: #f8f8f6; border-radius: 8px; padding: 14px 16px; }
+  .info-box h4 { font-size: 0.85rem; font-weight: bold; color: #333; margin-bottom: 8px; }
+  .info-box ul { padding-left: 16px; font-size: 0.82rem; color: #555; }
+  .info-box ul li { margin-bottom: 4px; }
+
+  /* Swim & run plan tables — scrollable on mobile */
+  .swim-plan { background: #eff6ff; border-radius: 8px; padding: 14px; margin-top: 10px; }
+  .swim-plan h4 { color: #1e40af; font-size: 0.85rem; margin-bottom: 8px; }
+  .run-plan { background: #f0fdf4; border-radius: 8px; padding: 14px; margin-top: 10px; }
+  .run-plan h4 { color: #166534; font-size: 0.85rem; margin-bottom: 8px; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .swim-plan table, .run-plan table { width: 100%; font-size: 0.8rem; border-collapse: collapse; min-width: 340px; }
+  .swim-plan td, .swim-plan th { padding: 5px 8px; text-align: left; border-bottom: 1px solid #bfdbfe; }
+  .swim-plan th { font-weight: bold; color: #1e40af; }
+  .run-plan td, .run-plan th { padding: 5px 8px; text-align: left; border-bottom: 1px solid #bbf7d0; }
+  .run-plan th { font-weight: bold; color: #166534; }
+
+  /* Nutrition */
+  .nutrition-grid { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 10px; }
+  @media (min-width: 480px) { .nutrition-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 720px) { .nutrition-grid { grid-template-columns: repeat(3, 1fr); } }
+  .nut-box { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px; }
+  .nut-box h4 { font-size: 0.8rem; font-weight: bold; margin-bottom: 6px; }
+  .nut-box p { font-size: 0.78rem; color: #555; }
+
+  /* Goal banner */
+  .goal-banner { background: linear-gradient(135deg, #1a3a2a, #2d6a4f); color: white; border-radius: 10px; padding: 16px 16px; margin-bottom: 18px; }
+  .goal-banner h3 { font-size: 0.95rem; margin-bottom: 8px; }
+  .goal-banner ul { padding-left: 18px; font-size: 0.83rem; color: #c8e6d0; }
+  .goal-banner ul li { margin-bottom: 4px; }
+
+  /* Legend */
+  .legend { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+  .legend-item { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+
+  /* Note boxes */
+  .note-box { background: #fffbeb; border-left: 3px solid #f59e0b; border-radius: 6px; padding: 10px 14px; margin-top: 12px; font-size: 0.82rem; color: #555; }
+  .note-box strong { color: #92400e; }
+
+  /* Quick ref table */
+  .table-scroll-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; margin-top: 8px; }
+  .weights-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; min-width: 420px; }
+  .weights-table th { background: #fef9c3; color: #854d0e; padding: 7px 10px; text-align: left; font-weight: bold; }
+  .weights-table td { padding: 6px 10px; border-bottom: 1px solid #f5f5f5; }
+  .weights-table tr:nth-child(even) td { background: #fafafa; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🤵 Wedding Fitness Plan</h1>
+  <p>BUD/S-inspired · ~8 weeks · Built around new baby, rec centre & your schedule</p>
+  <span class="badge">📍 Local Rec Centre: Pool · Gym · Sauna · Spa</span>
+</header>
+
+<div class="container">
+
+  <div class="goal-banner">
+    <h3>🎯 Goals for the next 8 weeks</h3>
+    <ul>
+      <li>Look and feel strong in photos — combat the skinny-fat with compound lifts + cardio</li>
+      <li>Build swim cardio & breathing (technique-first, then intervals)</li>
+      <li>Ease knees back into running gradually (walk/run → jog → tempo)</li>
+      <li>Improve overall body composition, posture & energy</li>
+      <li>Daily movement habit — even a 20 min walk counts</li>
+    </ul>
+  </div>
+
+  <!-- PHASE 1 -->
+  <div class="phase-card phase-1">
+    <div class="phase-header">
+      <span style="font-size:1.4rem">🌱</span>
+      <div>
+        <h2>Phase 1 — Foundation (Weeks 1–3)</h2>
+        <div style="font-size:0.82rem; color:#2d6a4f; margin-top:2px">Mum visiting · Daily habit-building · Ease in carefully</div>
+      </div>
+      <div class="dates">Weeks 1–3</div>
+    </div>
+    <div class="phase-body">
+
+      <div class="section-title">Sample Week</div>
+      <div class="legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#bfdbfe"></div> Swim</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#bbf7d0"></div> Run/Walk</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#fde68a"></div> Weights</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e9d5ff"></div> Active Recovery</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e5e7eb"></div> Rest/Flex</div>
+      </div>
+
+      <div class="week-grid">
+        <div class="day-cell day-gym-swim">
+          <div class="day-label">MON</div>
+          <div class="day-tags">
+            <span class="tag tag-weights">Upper Body</span>
+            <span class="tag tag-core">Core</span>
+            <span class="tag tag-swim">Swim 20'</span>
+            <span class="tag tag-sauna">Sauna</span>
+          </div>
+        </div>
+        <div class="day-cell day-run">
+          <div class="day-label">TUE</div>
+          <div class="day-tags">
+            <span class="tag tag-run">Run 2.5km ✓</span>
+            <span class="tag tag-stretch">Stretch 10'</span>
+            <span class="day-note">home-based (no rec centre)</span>
+          </div>
+        </div>
+        <div class="day-cell day-gym-swim">
+          <div class="day-label">WED</div>
+          <div class="day-tags">
+            <span class="tag tag-weights">Lower Body</span>
+            <span class="tag tag-core">Core</span>
+            <span class="tag tag-swim">Swim 20'</span>
+            <span class="tag tag-sauna">Sauna</span>
+            <span class="day-note-green">today</span>
+          </div>
+        </div>
+        <div class="day-cell day-active">
+          <div class="day-label">THU</div>
+          <div class="day-tags">
+            <span class="tag tag-bike">Bike/Walk 20'</span>
+            <span class="tag tag-stretch">Stretch</span>
+            <span class="day-note">easy day</span>
+          </div>
+        </div>
+        <div class="day-cell day-gym-swim">
+          <div class="day-label">FRI</div>
+          <div class="day-tags">
+            <span class="tag tag-weights">Upper Body</span>
+            <span class="tag tag-core">Core</span>
+            <span class="tag tag-swim">Swim 25'</span>
+          </div>
+        </div>
+        <div class="day-cell day-run">
+          <div class="day-label">SAT</div>
+          <div class="day-tags">
+            <span class="tag tag-run">Walk/Jog 30'</span>
+            <span class="tag tag-stretch">Mobility 10'</span>
+          </div>
+        </div>
+        <div class="day-cell day-rest">
+          <div class="day-label">SUN</div>
+          <div class="day-tags">
+            <span class="tag tag-rest">Rest</span>
+            <span class="tag tag-stretch">Stretch</span>
+            <span class="day-note">family time</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="note-box" style="margin-top:14px">
+        <strong>🦵 Knee Note:</strong> Weeks 1–2 are walk/jog intervals only (e.g. 2 min jog, 2 min walk). Don't run through pain. If knees flare, substitute cycling or pool running.
+      </div>
+
+      <div class="info-grid" style="margin-top:16px">
+        <div class="info-box">
+          <h4>🏋️ Weights Focus (Upper)</h4>
+          <ul>
+            <li>Bench Press or DB Press — 3×8</li>
+            <li>Lat Pulldown or Rows — 3×10</li>
+            <li>Shoulder Press — 3×10</li>
+            <li>Bicep Curl + Tricep Ext — 2×12</li>
+            <li>Push-ups to failure — 2 sets</li>
+            <li>Pull-ups (assisted if needed) — 3 sets</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>🏋️ Weights Focus (Lower)</h4>
+          <ul>
+            <li>Goblet Squat or Leg Press — 3×10</li>
+            <li>Romanian Deadlift — 3×10</li>
+            <li>Lunges — 2×10 each leg</li>
+            <li>Leg Curl — 2×12</li>
+            <li>Heel Raises — 2×15</li>
+            <li>Glute Bridge — 2×15</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>🧠 Core (daily, 10 min)</h4>
+          <ul>
+            <li>Plank — 2×30 sec</li>
+            <li>Side Plank — 2×25 sec each</li>
+            <li>Bird Dog — 2×20 alt reps</li>
+            <li>Bridge — 2×20 reps</li>
+            <li>Sit-ups — 3×15</li>
+            <li>Superman — 2×10</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>🤸 Flexibility (post-workout)</h4>
+          <ul>
+            <li>Hip flexor stretch — 45 sec each</li>
+            <li>Hamstring stretch — 45 sec each</li>
+            <li>Chest/shoulder opener</li>
+            <li>Calf stretch (knee-friendly!)</li>
+            <li>Thoracic rotation</li>
+            <li>Child's pose — 60 sec</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="swim-plan">
+        <h4>🏊 Phase 1 Swim Sessions (LSD focus — build base)</h4>
+        <div class="table-scroll">
+          <table>
+            <tr><th>Week</th><th>Session</th><th>Structure</th><th>Yards</th></tr>
+            <tr><td>1</td><td>All sessions</td><td>Easy continuous freestyle, rest as needed. Focus on breathing rhythm</td><td>600–800</td></tr>
+            <tr><td>2</td><td>All sessions</td><td>Continuous with 30 sec rest every 100m. Drills: catch-up stroke</td><td>800–1000</td></tr>
+            <tr><td>3</td><td>All sessions</td><td>2×400m with 60 sec rest. Add kick sets (50m kick × 4)</td><td>1000–1200</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="run-plan">
+        <h4>🏃 Phase 1 Run Progression (knee-friendly)</h4>
+        <div class="table-scroll">
+          <table>
+            <tr><th>Week</th><th>Format</th><th>Total Time</th></tr>
+            <tr><td>1</td><td>2.5km run (done ✓) — ahead of schedule, knees feeling good</td><td>~20–25 min</td></tr>
+            <tr><td>2</td><td>3 min jog / 1.5 min walk × 6 rounds</td><td>27 min</td></tr>
+            <tr><td>3</td><td>5 min jog / 1 min walk × 4–5 rounds</td><td>24–30 min</td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 2 -->
+  <div class="phase-card phase-2">
+    <div class="phase-header">
+      <span style="font-size:1.4rem">⚡</span>
+      <div>
+        <h2>Phase 2 — Build (Weeks 4–6)</h2>
+        <div style="font-size:0.82rem; color:#2b5c8a; margin-top:2px">Mum gone · Morning sessions when possible · Intensity increases</div>
+      </div>
+      <div class="dates">Weeks 4–6</div>
+    </div>
+    <div class="phase-body">
+
+      <div class="section-title">Sample Week</div>
+      <div class="week-grid">
+        <div class="day-cell day-gym-swim">
+          <div class="day-label">MON</div>
+          <div class="day-tags">
+            <span class="tag tag-weights">Upper Body</span>
+            <span class="tag tag-core">Core</span>
+            <span class="tag tag-swim">Swim INT</span>
+          </div>
+        </div>
+        <div class="day-cell day-run">
+          <div class="day-label">TUE</div>
+          <div class="day-tags">
+            <span class="tag tag-run">Run 3.5km</span>
+            <span class="tag tag-stretch">Stretch</span>
+            <span class="day-note">home-based</span>
+          </div>
+        </div>
+        <div class="day-cell day-gym-swim">
+          <div class="day-label">WED</div>
+          <div class="day-tags">
+            <span class="tag tag-weights">Lower Body</span>
+            <span class="tag tag-core">Core</span>
+            <span class="tag tag-swim">Swim LSD</span>
+          </div>
+        </div>
+        <div class="day-cell day-run">
+          <div class="day-label">THU</div>
+          <div class="day-tags">
+            <span class="tag tag-run">Run 3km CHI</span>
+            <span class="tag tag-stretch">Stretch</span>
+          </div>
+        </div>
+        <div class="day-cell day-gym-swim">
+          <div class="day-label">FRI</div>
+          <div class="day-tags">
+            <span class="tag tag-weights">Upper Body</span>
+            <span class="tag tag-core">Core</span>
+            <span class="tag tag-swim">Swim 30'</span>
+          </div>
+        </div>
+        <div class="day-cell day-run">
+          <div class="day-label">SAT</div>
+          <div class="day-tags">
+            <span class="tag tag-run">Long Run 4–5km</span>
+            <span class="tag tag-sauna">Sauna/spa</span>
+          </div>
+        </div>
+        <div class="day-cell day-rest">
+          <div class="day-label">SUN</div>
+          <div class="day-tags">
+            <span class="tag tag-rest">Rest</span>
+            <span class="tag tag-stretch">Stretch + Walk</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="swim-plan" style="margin-top:16px">
+        <h4>🏊 Phase 2 Swim Sessions (Introduce Intervals)</h4>
+        <div class="table-scroll">
+          <table>
+            <tr><th>Type</th><th>Structure</th><th>Yards</th></tr>
+            <tr><td>LSD</td><td>Continuous 1000–1500m, comfortable pace, breathing focus</td><td>1100–1500</td></tr>
+            <tr><td>INT</td><td>4–6 × 100m at effort, 2× recovery time. Rest 3–4 min between</td><td>~1000</td></tr>
+            <tr><td>Drills</td><td>Add 200m drill work: catch-up, fingertip drag, bilateral breathing</td><td>Extra 200m</td></tr>
+          </table>
+        </div>
+      </div>
+
+      <div class="run-plan" style="margin-top:12px">
+        <h4>🏃 Phase 2 Run Progression</h4>
+        <div class="table-scroll">
+          <table>
+            <tr><th>Type</th><th>Format</th></tr>
+            <tr><td>LSD (Sat)</td><td>Continuous jog 4–5km, conversational pace. Walk if knees protest</td></tr>
+            <tr><td>CHI (Thu)</td><td>15–17 min continuous at ~85% effort, then easy cool-down jog</td></tr>
+            <tr><td>Easy (Tue)</td><td>30 min easy jog or walk/jog, heart rate relaxed</td></tr>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PHASE 3 -->
+  <div class="phase-card phase-3">
+    <div class="phase-header">
+      <span style="font-size:1.4rem">🔥</span>
+      <div>
+        <h2>Phase 3 — Peak & Polish (Weeks 7–8)</h2>
+        <div style="font-size:0.82rem; color:#c07b3a; margin-top:2px">Wedding week taper · Look & feel best · Don't overdo it!</div>
+      </div>
+      <div class="dates">Weeks 7–8</div>
+    </div>
+    <div class="phase-body">
+
+      <div class="week-grid">
+        <div class="day-cell day-gym-swim">
+          <div class="day-label">MON</div>
+          <div class="day-tags">
+            <span class="tag tag-weights">Full Body</span>
+            <span class="tag tag-swim">Swim 30'</span>
+          </div>
+        </div>
+        <div class="day-cell day-run">
+          <div class="day-label">TUE</div>
+          <div class="day-tags">
+            <span class="tag tag-run">Run 4km easy</span>
+            <span class="tag tag-stretch">Stretch</span>
+          </div>
+        </div>
+        <div class="day-cell day-gym-swim">
+          <div class="day-label">WED</div>
+          <div class="day-tags">
+            <span class="tag tag-weights">Upper Focus</span>
+            <span class="tag tag-swim">Swim INT</span>
+          </div>
+        </div>
+        <div class="day-cell day-active">
+          <div class="day-label">THU</div>
+          <div class="day-tags">
+            <span class="tag tag-bike">Easy Bike/Walk</span>
+            <span class="tag tag-sauna">Sauna + Spa</span>
+            <span class="day-note">recovery focus</span>
+          </div>
+        </div>
+        <div class="day-cell day-gym-swim">
+          <div class="day-label">FRI</div>
+          <div class="day-tags">
+            <span class="tag tag-weights">Light Full Body</span>
+            <span class="tag tag-swim">Easy Swim 20'</span>
+          </div>
+        </div>
+        <div class="day-cell day-active">
+          <div class="day-label">SAT</div>
+          <div class="day-tags">
+            <span class="tag tag-stretch">Stretch + Walk</span>
+            <span class="tag tag-sauna">Sauna</span>
+            <span class="day-note">recovery only</span>
+          </div>
+        </div>
+        <div class="day-cell day-rest">
+          <div class="day-label">SUN</div>
+          <div class="day-tags">
+            <span class="tag tag-rest">REST</span>
+            <span class="day-note">sleep, hydrate, relax</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="note-box" style="margin-top:14px">
+        <strong>Wedding week:</strong> Drop volume by 40%. No new exercises. Focus on sleep, hydration, looking fresh. A light swim or walk the day before is perfect — no heavy lifting within 48 hrs of the wedding.
+      </div>
+
+    </div>
+  </div>
+
+  <!-- NUTRITION -->
+  <div class="phase-card" style="border-top: 4px solid #6b7280;">
+    <div class="phase-header" style="background: #f1f5f9;">
+      <span style="font-size:1.4rem">🥗</span>
+      <div><h2>Nutrition Strategy</h2>
+      <div style="font-size:0.82rem; color:#475569; margin-top:2px">Combat skinny-fat · Support training · New-parent practical</div></div>
+    </div>
+    <div class="phase-body">
+
+      <div class="section-title">Core Principles</div>
+      <div class="nutrition-grid">
+        <div class="nut-box" style="border-top: 3px solid #ef4444;">
+          <h4>🥩 Protein First</h4>
+          <p>Aim for ~1.6–2g per kg bodyweight. Every meal should have a fist-sized protein source. This is the #1 lever for body recomp (losing fat, gaining muscle simultaneously).</p>
+        </div>
+        <div class="nut-box" style="border-top: 3px solid #f59e0b;">
+          <h4>⚡ Carbs Around Training</h4>
+          <p>Eat your main carbs in the meal before and after workouts. Oats or fruit pre-workout. Rice/sweet potato/pasta post-workout. Reduce refined carbs on rest days.</p>
+        </div>
+        <div class="nut-box" style="border-top: 3px solid #3b82f6;">
+          <h4>💧 Hydration</h4>
+          <p>2.5–3L water daily — more on swim days. Start with a big glass before morning training. Electrolytes matter if you're sweating heavily. Limit alcohol (but don't stress pre-wedding toasts).</p>
+        </div>
+        <div class="nut-box" style="border-top: 3px solid #10b981;">
+          <h4>🥦 Veg Volume</h4>
+          <p>Fill half your plate with veg at lunch and dinner. This keeps you full on fewer calories while micronutrients support recovery and energy. Frozen veg is fine — easy with a baby.</p>
+        </div>
+        <div class="nut-box" style="border-top: 3px solid #8b5cf6;">
+          <h4>😴 Sleep = Nutrition</h4>
+          <p>Poor sleep tanks testosterone, spikes cortisol and causes fat retention. Getting 6–7 hrs (even broken) matters as much as diet. Nap when Rory naps when possible.</p>
+        </div>
+        <div class="nut-box" style="border-top: 3px solid #f97316;">
+          <h4>🍳 Practical Eating</h4>
+          <p>Batch cook on Sunday. Greek yoghurt + berries for breakfast. Pre-made protein shakes for when life is chaos. Don't skip meals — blood sugar crashes wreck energy and willpower.</p>
+        </div>
+      </div>
+
+      <div class="section-title">Sample Day (Training Day)</div>
+      <div class="info-box" style="margin-top:0">
+        <ul>
+          <li><strong>Pre-workout (6:30am):</strong> Banana + black coffee, or small bowl oats with milk</li>
+          <li><strong>Post-workout breakfast (8:30am):</strong> 3–4 eggs + toast or Greek yoghurt + granola + fruit</li>
+          <li><strong>Lunch (12:30pm):</strong> Chicken/tuna/leftover protein + rice or wrap + salad</li>
+          <li><strong>Afternoon snack:</strong> Protein shake or handful nuts + apple</li>
+          <li><strong>Dinner:</strong> Protein + veg + small portion carbs (fish, steak, chicken thighs work great)</li>
+          <li><strong>Evening:</strong> Avoid heavy eating after 8pm. Chamomile tea, magnesium supplement can help sleep</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- REST & RECOVERY -->
+  <div class="phase-card" style="border-top: 4px solid #06b6d4;">
+    <div class="phase-header" style="background: #ecfeff;">
+      <span style="font-size:1.4rem">🛁</span>
+      <div><h2>Rest & Recovery</h2>
+      <div style="font-size:0.82rem; color:#0e7490; margin-top:2px">Your secret weapon — and the rec centre makes it easy</div></div>
+    </div>
+    <div class="phase-body">
+      <div class="info-grid">
+        <div class="info-box">
+          <h4>🧖 Sauna (rec centre)</h4>
+          <ul>
+            <li>10–15 min after weights or swim</li>
+            <li>Improves recovery, reduces soreness</li>
+            <li>Heat exposure = some cardiovascular benefit</li>
+            <li>Don't do pre-intense workout</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>♨️ Spa / Cold-Warm Contrast</h4>
+          <ul>
+            <li>Alternate between cool pool & warm spa</li>
+            <li>Excellent for reducing inflammation</li>
+            <li>5 min hot → 1 min cold × 2–3 rounds</li>
+            <li>Great stress relief for new-parent brain</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>💤 Sleep Strategy</h4>
+          <ul>
+            <li>Even 6 hrs beats 4 hrs significantly</li>
+            <li>Dark, cool room</li>
+            <li>No phone for 30 min before bed</li>
+            <li>Magnesium glycinate supplement: proven for sleep quality</li>
+          </ul>
+        </div>
+        <div class="info-box">
+          <h4>📆 When to Skip & Adapt</h4>
+          <ul>
+            <li>Rory has a bad night? → Do the easy home option (20 min walk/stretch)</li>
+            <li>Fiona needs help? → Don't stress, tomorrow is another day</li>
+            <li>Knees hurt? → Pool running or bike instead</li>
+            <li>Feeling great? → Add volume, but max +10% per week</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUICK REF -->
+  <div class="phase-card" style="border-top: 4px solid #7c3aed;">
+    <div class="phase-header" style="background: #f5f3ff;">
+      <span style="font-size:1.4rem">📋</span>
+      <div><h2>Quick Reference: Your Options by Time Slot</h2></div>
+    </div>
+    <div class="phase-body" style="padding-top:16px">
+      <div class="table-scroll-wrap">
+        <table class="weights-table">
+          <tr><th>Time Slot</th><th>Duration</th><th>Best Option</th><th>Backup (baby chaos)</th></tr>
+          <tr><td>🌅 7am (rec centre)</td><td>60–75 min</td><td>Weights + Swim + Sauna</td><td>Swim only (30 min)</td></tr>
+          <tr><td>☀️ Lunch (WFH days)</td><td>40–50 min</td><td>Run outside + stretch</td><td>20 min walk + 10 min core</td></tr>
+          <tr><td>🌤 3–4pm (rare)</td><td>45–60 min</td><td>Swim intervals or long run</td><td>Bike ride or walk</td></tr>
+          <tr><td>🏠 Home-only day</td><td>20–30 min</td><td>Walk/jog + bodyweight core</td><td>10 min stretch + walk around block</td></tr>
+          <tr><td>😩 Total chaos day</td><td>10–15 min</td><td>Core routine on living room floor</td><td>10 min walk with pram</td></tr>
+        </table>
+      </div>
+      <div class="note-box" style="margin-top:14px">
+        <strong>Tuesday rule:</strong> You can't easily get to the rec centre on Tuesdays, so make it your dedicated outdoor run day (you hit 2.5km in Week 1 — great start!). That's perfect — gives your gym muscles a day off.
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; color:#aaa; font-size:0.75rem; margin-top:20px; padding-bottom: 20px;">
+    Built on the Naval Special Warfare Physical Training Guide · Adapted for real life with a baby 👶
+  </div>
+
+</div>
+</body>
+</html>
