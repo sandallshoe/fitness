@@ -236,6 +236,7 @@
   .lift-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
   @media (min-width: 560px) { .lift-grid { grid-template-columns: repeat(3, 1fr); } }
 
+  /* Core ABC grid — responsive version of the inline 3-col grid */
   .core-lift-grid { display: grid; grid-template-columns: 1fr; gap: 10px; }
   @media (min-width: 560px) { .core-lift-grid { grid-template-columns: repeat(3, 1fr); } }
 
@@ -345,6 +346,313 @@
 
   /* Footer */
   footer { text-align: center; color: #2d5a3e; font-size: 0.72rem; margin-top: 24px; padding-bottom: 24px; letter-spacing: 0.5px; }
+
+  /* ===================== Workout Log ===================== */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #52b788;
+    color: #0f1a14;
+    border: none;
+    font-size: 1.9rem;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 300;
+    transition: background 0.15s, transform 0.1s;
+    line-height: 1;
+  }
+  .fab:hover { background: #6dd5a0; transform: scale(1.06); }
+  .fab:active { transform: scale(0.93); }
+
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.72);
+    z-index: 200;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s;
+  }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  @media (min-width: 600px) { .modal-overlay { align-items: center; } }
+
+  .modal-sheet {
+    background: #162118;
+    border: 1px solid #2a4030;
+    border-radius: 14px 14px 0 0;
+    width: 100%;
+    max-width: 600px;
+    max-height: 92vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(30px);
+    transition: transform 0.18s;
+  }
+  .modal-overlay.open .modal-sheet { transform: translateY(0); }
+  @media (min-width: 600px) { .modal-sheet { border-radius: 12px; max-height: 86vh; } }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px 13px;
+    border-bottom: 1px solid #1e3025;
+    flex-shrink: 0;
+  }
+  .modal-header h3 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #d8f0e0;
+  }
+  .modal-close {
+    background: none;
+    border: none;
+    color: #567a65;
+    font-size: 1rem;
+    cursor: pointer;
+    padding: 4px 6px;
+    line-height: 1;
+  }
+  .modal-close:hover { color: #85c49a; }
+
+  .modal-body {
+    padding: 14px 18px;
+    overflow-y: auto;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .modal-body label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #52b788;
+  }
+  .modal-body input,
+  .modal-body textarea {
+    background: #0f1a14;
+    border: 1px solid #1e3025;
+    border-radius: 6px;
+    color: #c8e6d0;
+    padding: 9px 12px;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.82rem;
+    width: 100%;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .modal-body input:focus,
+  .modal-body textarea:focus { border-color: #52b788; }
+  .modal-body textarea {
+    resize: vertical;
+    min-height: 200px;
+    line-height: 1.7;
+  }
+  input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.6) sepia(1) saturate(2) hue-rotate(90deg);
+    cursor: pointer;
+  }
+
+  .modal-footer {
+    padding: 11px 18px 16px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    border-top: 1px solid #1e3025;
+    flex-shrink: 0;
+  }
+  .btn-cancel {
+    background: transparent;
+    border: 1px solid #2a4030;
+    color: #6a9a7a;
+    border-radius: 6px;
+    padding: 9px 18px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-cancel:hover { border-color: #52b788; color: #85c49a; }
+  .btn-save {
+    background: #52b788;
+    border: none;
+    color: #0f1a14;
+    border-radius: 6px;
+    padding: 9px 22px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .btn-save:hover { background: #6dd5a0; }
+
+  /* History view */
+  .history-view {
+    position: fixed;
+    inset: 0;
+    background: #0f1a14;
+    z-index: 150;
+    overflow-y: auto;
+  }
+  .history-inner {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 24px 16px 80px;
+  }
+  .history-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid #1e3025;
+  }
+  .history-top h2 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #d8f0e0;
+  }
+  .history-close {
+    background: transparent;
+    border: 1px solid #2a4030;
+    color: #6a9a7a;
+    border-radius: 6px;
+    padding: 7px 14px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .history-close:hover { border-color: #52b788; color: #85c49a; }
+
+  .history-empty {
+    text-align: center;
+    color: #2d5a3e;
+    font-size: 0.88rem;
+    padding: 60px 20px;
+    font-style: italic;
+  }
+
+  .log-entry {
+    background: #162118;
+    border: 1px solid #2a4030;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    overflow: hidden;
+  }
+  .log-entry-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 16px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .log-entry-header:hover { background: rgba(82,183,136,0.04); }
+  .log-entry-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: #c8e6d0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex: 1;
+  }
+  .log-entry-date {
+    font-size: 0.68rem;
+    color: #567a65;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .log-chevron {
+    color: #2d5a3e;
+    font-size: 0.7rem;
+    transition: transform 0.15s;
+    flex-shrink: 0;
+  }
+  .log-entry.open .log-chevron { transform: rotate(180deg); }
+
+  .log-entry-body {
+    display: none;
+    padding: 0 16px 14px;
+    border-top: 1px solid #1e3025;
+  }
+  .log-entry.open .log-entry-body { display: block; }
+  .log-entry-body pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-family: 'Barlow', sans-serif;
+    font-size: 0.8rem;
+    color: #7a9a82;
+    line-height: 1.7;
+    margin-top: 12px;
+  }
+  .log-entry-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+    padding-top: 10px;
+    border-top: 1px solid #1e3025;
+  }
+  .btn-delete {
+    background: transparent;
+    border: 1px solid #3a1a1a;
+    color: #7a4848;
+    border-radius: 5px;
+    padding: 5px 12px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 600;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .btn-delete:hover { border-color: #e05050; color: #e05050; }
+
+  .footer-log-link {
+    background: none;
+    border: none;
+    color: #2d5a3e;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    font-size: 0.72rem;
+    letter-spacing: 0.5px;
+    font-family: inherit;
+    padding: 0;
+    transition: color 0.15s;
+  }
+  .footer-log-link:hover { color: #52b788; }
 </style>
 </head>
 <body>
@@ -625,7 +933,7 @@
       <div class="card-header-icon">🏃</div>
       <div>
         <h2>Run Progression</h2>
-        <div class="sub">Strong base already built — now push the distance & intensity</div>
+        <div class="sub">Strong base already built — now push the distance &amp; intensity</div>
       </div>
     </div>
     <div class="card-body">
@@ -844,8 +1152,263 @@
     </div>
   </div>
 
-  <footer>Built on the Naval Special Warfare Physical Training Guide · Solo sprint edition · Wedding in ~4 weeks 💪</footer>
+  <footer>Built on the Naval Special Warfare Physical Training Guide · Solo sprint edition · Wedding in ~4 weeks 💪 · <button class="footer-log-link" onclick="toggleHistory()">View Logs</button></footer>
 
 </div>
+
+<!-- Floating action button -->
+<button class="fab" id="fab-btn" onclick="openLogModal()" title="Log workout">+</button>
+
+<!-- Log modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-sheet" onclick="event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Log Workout</h3>
+      <button class="modal-close" onclick="closeLogModal()" aria-label="Close">✕</button>
+    </div>
+    <div class="modal-body">
+      <label for="log-title">Title</label>
+      <input type="text" id="log-title" autocomplete="off" />
+      <label for="log-date">Date &amp; Time</label>
+      <input type="datetime-local" id="log-date" />
+      <label for="log-body">Notes — fill in sets / reps / weights after each exercise</label>
+      <textarea id="log-body" rows="12" spellcheck="false"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeLogModal()">Cancel</button>
+      <button class="btn-save" onclick="saveLog()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- History view -->
+<div class="history-view" id="history-view" style="display:none;">
+  <div class="history-inner">
+    <div class="history-top">
+      <h2>Workout Log</h2>
+      <button class="history-close" onclick="toggleHistory()">← Back</button>
+    </div>
+    <div id="history-list"></div>
+  </div>
+</div>
+
+<script>
+  const DAY_WORKOUTS = {
+    0: {
+      label: 'Sunday — Push + Swim',
+      body:
+`PUSH
+Bench Press —
+Incline DB Press —
+Seated Shoulder Press —
+Lateral Raises —
+Tricep Dips or Pushdowns —
+Push-ups to failure —
+
+SWIM (Easy / LSD)
+Distance:
+Notes: `
+    },
+    1: {
+      label: 'Monday — Pull + Run',
+      body:
+`PULL
+Weighted Pull-ups / Lat Pulldown —
+Barbell or DB Row —
+Cable Row —
+Face Pulls —
+Bicep Curls —
+Hammer Curls —
+
+RUN (4km easy)
+Distance:
+Time:
+Notes: `
+    },
+    2: {
+      label: 'Tuesday — Push + Swim',
+      body:
+`PUSH
+Bench Press —
+Incline DB Press —
+Seated Shoulder Press —
+Lateral Raises —
+Tricep Dips or Pushdowns —
+Push-ups to failure —
+
+SWIM (35 min)
+Distance:
+Notes: `
+    },
+    3: {
+      label: 'Wednesday — Run + Core',
+      body:
+`RUN (4–5km)
+Distance:
+Time:
+Notes:
+
+CORE
+Plank —
+Side Plank —
+Bird Dog —
+Hanging Knee Raises —
+Sit-ups — `
+    },
+    4: {
+      label: 'Thursday — Pull + Swim',
+      body:
+`PULL
+Weighted Pull-ups / Lat Pulldown —
+Barbell or DB Row —
+Cable Row —
+Face Pulls —
+Bicep Curls —
+Hammer Curls —
+
+SWIM (Intervals)
+Distance:
+Notes: `
+    },
+    5: {
+      label: 'Friday — Legs + Swim',
+      body:
+`LEGS
+Barbell Squat / Goblet Squat —
+Romanian Deadlift —
+Leg Press —
+Walking Lunges —
+Leg Curl —
+Standing Calf Raises —
+
+SWIM (30 min)
+Distance:
+Notes: `
+    },
+    6: {
+      label: 'Saturday — Long Run + Core + Sauna',
+      body:
+`LONG RUN (5–6km)
+Distance:
+Time:
+Notes:
+
+CORE
+Plank —
+Side Plank —
+Russian Twists —
+Bicycle Crunches —
+Superman Hold —
+
+SAUNA
+Duration: `
+    }
+  };
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function localDateTimeValue(d) {
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  function formatDateDisplay(str) {
+    if (!str) return '';
+    const [datePart, timePart] = str.split('T');
+    if (!datePart) return str;
+    const [y, m, d] = datePart.split('-').map(Number);
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    const dow = days[new Date(y, m - 1, d).getDay()];
+    return `${dow} ${d} ${months[m - 1]}${timePart ? ' · ' + timePart : ''}`;
+  }
+
+  function openLogModal() {
+    const now = new Date();
+    const w = DAY_WORKOUTS[now.getDay()];
+    document.getElementById('log-title').value = w.label;
+    document.getElementById('log-date').value = localDateTimeValue(now);
+    document.getElementById('log-body').value = w.body;
+    document.getElementById('modal-overlay').classList.add('open');
+    setTimeout(() => document.getElementById('log-body').focus(), 160);
+  }
+
+  function closeLogModal() {
+    document.getElementById('modal-overlay').classList.remove('open');
+  }
+
+  function getLogs() {
+    try { return JSON.parse(localStorage.getItem('workout_logs') || '[]'); }
+    catch { return []; }
+  }
+
+  function putLogs(logs) {
+    localStorage.setItem('workout_logs', JSON.stringify(logs));
+  }
+
+  function saveLog() {
+    const title = document.getElementById('log-title').value.trim();
+    const date  = document.getElementById('log-date').value;
+    const body  = document.getElementById('log-body').value.trim();
+    if (!title && !body) return;
+    const logs = getLogs();
+    logs.unshift({ id: Date.now(), title: title || 'Workout', date, body });
+    putLogs(logs);
+    closeLogModal();
+  }
+
+  function toggleHistory() {
+    const hv = document.getElementById('history-view');
+    if (hv.style.display === 'none') {
+      renderHistory();
+      hv.style.display = 'block';
+    } else {
+      hv.style.display = 'none';
+    }
+  }
+
+  function esc(str) {
+    return String(str)
+      .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  function renderHistory() {
+    const logs = getLogs();
+    const list = document.getElementById('history-list');
+    if (!logs.length) {
+      list.innerHTML = '<div class="history-empty">No workouts logged yet. Hit + to log your first session.</div>';
+      return;
+    }
+    list.innerHTML = logs.map(log => `
+      <div class="log-entry" id="entry-${log.id}">
+        <div class="log-entry-header" onclick="toggleEntry(${log.id})">
+          <div class="log-entry-title">${esc(log.title)}</div>
+          <div class="log-entry-date">${formatDateDisplay(log.date)}</div>
+          <div class="log-chevron">▼</div>
+        </div>
+        <div class="log-entry-body">
+          <pre>${esc(log.body)}</pre>
+          <div class="log-entry-actions">
+            <button class="btn-delete" onclick="deleteLog(${log.id})">Delete</button>
+          </div>
+        </div>
+      </div>`).join('');
+  }
+
+  function toggleEntry(id) {
+    const el = document.getElementById('entry-' + id);
+    if (el) el.classList.toggle('open');
+  }
+
+  function deleteLog(id) {
+    if (!confirm('Delete this log entry?')) return;
+    putLogs(getLogs().filter(l => l.id !== id));
+    renderHistory();
+  }
+
+  document.getElementById('modal-overlay').addEventListener('click', closeLogModal);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLogModal(); });
+</script>
+
 </body>
 </html>
